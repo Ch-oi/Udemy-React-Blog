@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import axios from '../../../axios';
+import { Redirect } from 'react-router-dom';
 
 import './NewPost.css';
 
@@ -8,7 +9,12 @@ class NewPost extends Component {
     title: '',
     content: '',
     author: 'Max',
+    submitted: false,
   };
+
+  componentDidMount() {
+    console.log(this.props);
+  }
 
   postDataHandler = () => {
     const data = {
@@ -17,16 +23,21 @@ class NewPost extends Component {
       author: this.state.author,
     };
 
-    axios
-      .post(`/posts`, data)
-      .then((response) => {
-        console.log(response);
-      });
+    axios.post(`/posts`, data).then((response) => {
+      console.log(response);
+      this.setState({ submitted: true });
+    });
   };
 
   render() {
+    let redirect = null;
+    if (this.state.submitted) {
+      redirect = <Redirect to='/posts' />;
+    }
+
     return (
       <div className='NewPost'>
+        {redirect}
         <h1>Add a Post</h1>
         <label>Title</label>
         <input
